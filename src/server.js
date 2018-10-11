@@ -6,7 +6,7 @@ app.set("port", port);
 
 const server = http.createServer(app);
 
-server.listen(port);
+server.listen(port, '0.0.0.0');
 
 function normalizePort(val) {
     const port = parseInt(val, 10);
