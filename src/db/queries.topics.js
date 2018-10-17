@@ -1,4 +1,4 @@
-const Topic = require("./models").Topics;
+const Topic = require("./models").Topic;
 
 module.exports = {
     getAllTopics(callback){

@@ -2,7 +2,7 @@ const request = require("request");
 const server = require("../../src/server");
 const base = "http://localhost:3000/topics/";
 const sequelize = require("../../src/db/models/index").sequelize;
-const Topic = require("../../src/db/models").Topics;
+const Topic = require("../../src/db/models").Topic;
 
 describe("routes : topics", () => {
     beforeEach((done) => {
@@ -26,8 +26,6 @@ describe("routes : topics", () => {
     describe("GET /topics", () => {
         it("should return a status code 200 and all topics", (done) => {
             request.get(base, (err, res, body) => {
-                console.log(res);
-                console.log(body);
                 expect(res.statusCode).toBe(200);
                 expect(err).toBeNull();
                 expect(body).toContain("Topics");
