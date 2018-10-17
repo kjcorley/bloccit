@@ -1,0 +1,28 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <% include ../static/partials/head.ejs %>
+    </head>
+    <body>
+        <% include ../static/partials/navbar.ejs %>
+
+        <main class="container">
+
+            <h1>Edit Topic</h1>
+
+            <form action="/topic/<% topic.id %>/update" method="post">
+                <div class="form-group">
+                    <label for="title">Topic title</label>
+                    <input value="<%= topic.title %>" type="text" class="form-control" name="title" aria-describedby="titleHelp" placeholder="Enter title">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea rows="4" class="form-control" name="description" placeholder="Enter description"><%= topic.description %></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Updates</button>
+            </form>
+        </main>
+
+        <% include ../static/partials/baseScripts.ejs %>
+    </body>
+</html>
