@@ -7,10 +7,12 @@ module.exports = {
     create(req, res, next){
         let newFlair = {
             tag: req.body.tag,
+            color: req.body.color,
             topicId: req.params.topicId
         };
         flairQueries.addFlair(newFlair, (err, flair) => {
             if(err) {
+                console.log(err);
                 res.redirect(500, "/flairs/new");
             } else {
                 res.redirect(303, `/topics/${flair.topicId}`);

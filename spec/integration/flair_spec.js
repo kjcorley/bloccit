@@ -23,6 +23,7 @@ describe("routes: flair", () => {
 
                 Flair.create({
                     tag: "science",
+                    color: "#FFF",
                     topicId: this.topic.id
                 })
                 .then((flair) => {
@@ -40,7 +41,6 @@ describe("routes: flair", () => {
     describe("GET /topics/:topicId/flairs/new", () => {
 
         it("should render a new flair form", (done) => {
-            console.log(this.topic.id);
             request.get(`${base}/${this.topic.id}/flairs/new`, (err, res, body) => {
                 expect(err).toBeNull();
                 expect(body).toContain("New Flair");
@@ -54,7 +54,8 @@ describe("routes: flair", () => {
             const options = {
                 url: `${base}/${this.topic.id}/flairs/create`,
                 form: {
-                    tag: "science"
+                    tag: "science",
+                    color: "#FFF"
                 }
             };
             request.post(options,

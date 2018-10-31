@@ -12,7 +12,7 @@
                 <a href="/topics/<%= topic.id %>/flairs/new" class="fa fa-plus"></a>
                 <span>flairs:</span>
                 <% topic.flairs.forEach((flair) => { %>
-                    <span><%= flair.tag %></span>
+                    <span style="color: <%= flair.color %>"><%= flair.tag %></span>
                     <a href="/topics/<%= topic.id %>/flairs/<%= flair.id %>/edit" class="fa fa-pencil"></a>
                     <form id="flairDelete" style="display: initial" action="/topics/<%= topic.id %>/flairs/<%= flair.id %>/destroy" method="POST">
                         <button type="submit" class="btn"><i class="fa fa-times"></i></button>

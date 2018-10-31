@@ -18,6 +18,7 @@ describe("Flair", () => {
 
                 Flair.create({
                     tag: "travel",
+                    color: "#FFF",
                     topicId: this.topic.id
                 })
                 .then((flair) => {
@@ -37,6 +38,7 @@ describe("Flair", () => {
         it("should create a flair object with a tag and assigned topic", (done) => {
             Flair.create({
                 tag: "travel",
+                color: "#FFF",
                 topicId: this.topic.id
             })
             .then((flair) => {
