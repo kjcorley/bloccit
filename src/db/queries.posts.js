@@ -5,7 +5,7 @@ module.exports = {
     addPost(newPost, callback){
         return Post.create(newPost)
         .then((post) => {
-            callback(null, newPost);
+            callback(null, post);
         })
         .catch((err) => {
             callback(err);

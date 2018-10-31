@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <% include ../static/partials/head.ejs %>
+    </head>
+    <body>
+        <% include ../static/partials/navbar.ejs %>
+
+        <main class="container">
+            <h1>New Flair</h1>
+
+            <form action="/topics/<%= topicId %>/flairs/create" method="POST">
+                <div class="form-group">
+                    <label for="tag">Flair tag</label>
+                    <input type="text" class="form-control" name="tag" aria-describedby="tagHelp" placeholder="Enter Tag">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </main>
+
+        <% include ../static/partials/baseScripts.ejs %>
+
+    </body>
+</html>
