@@ -162,7 +162,7 @@ describe("routes : comments", () => {
         });
 
         describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
-            it("should delte the comment with the assocaited ID", (done) => {
+            it("should delete the comment with the associated ID", (done) => {
                 Comment.all()
                 .then((comments) => {
                     const commentCountBeforeDelete = comments.length;
@@ -181,6 +181,137 @@ describe("routes : comments", () => {
                     );
                 });
             });
+
+            it("should not delete another member's comment", (done) => {
+                User.create({
+                    email: "new@example.com",
+                    password: "123456"
+                })
+                .then((user) => {
+                    Comment.create({
+                        body: "Just joined!",
+                        userId: user.id,
+                        postId: this.post.id
+                    })
+                    .then((comment) => {
+                        this.newComment = comment;
+                        Comment.all()
+                        .then((comments) => {
+                            const commentCountBeforeDelete = comments.length;
+                            expect(commentCountBeforeDelete).toBe(2);
+                            request.post(
+                                `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.newComment.id}/destroy`,
+                                (err, res, body) => {
+                                    Comment.all()
+                                    .then((comments) => {
+                                        expect(err).toBeNull();
+                                        expect(comments.length).toBe(commentCountBeforeDelete);
+                                        done();
+                                    })
+                                }
+                            );
+                        });
+                    });
+                });
+            });
         });
     });
+
+    describe("admin user performing CRUD operations on comment", () => {
+        beforeEach((done) => {
+            request.get({
+                url: "http://localhost:3000/auth/fake/",
+                form: {
+                    role: "admin",
+                    userId: this.user.id
+                }
+            },
+                (err, res, body) => {
+                    done();
+                }
+            );
+        });
+
+        describe("POST /topics/:topicId/posts/:postId/comments/create", () => {
+            it("should create a new comment and redirect", (done) => {
+                const options = {
+                    url: `${base}${this.topic.id}/posts/${this.post.id}/comments/create`,
+                    form: {
+                        body: "This comment is amazing!"
+                    }
+                };
+                request.post(options,
+                    (err, res, body) => {
+                        Comment.findOne({where: {body: "This comment is amazing!"}})
+                        .then((comment) => {
+                            expect(comment).not.toBeNull();
+                            expect(comment.body).toBe("This comment is amazing!");
+                            expect(comment.id).not.toBeNull();
+                            done();
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            done();
+                        });
+                    }
+                );
+            });
+        });
+
+        describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+            it("should delete the comment with the associated ID belonging to admin", (done) => {
+                Comment.all()
+                .then((comments) => {
+                    const commentCountBeforeDelete = comments.length;
+                    expect(commentCountBeforeDelete).toBe(1);
+                    request.post(
+                        `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+                        (err, res, body) => {
+                            expect(res.statusCode).toBe(302);
+                            Comment.all()
+                            .then((comments) => {
+                                expect(err).toBeNull();
+                                expect(comments.length).toBe(commentCountBeforeDelete - 1);
+                                done();
+                            })
+                        }
+                    );
+                });
+            });
+
+            it("should delete another member's comment", (done) => {
+                User.create({
+                    email: "new@example.com",
+                    password: "123456"
+                })
+                .then((user) => {
+                    Comment.create({
+                        body: "Just joined!",
+                        userId: user.id,
+                        postId: this.post.id
+                    })
+                    .then((comment) => {
+                        this.newComment = comment;
+                        Comment.all()
+                        .then((comments) => {
+                            const commentCountBeforeDelete = comments.length;
+                            expect(commentCountBeforeDelete).toBe(2);
+                            request.post(
+                                `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.newComment.id}/destroy`,
+                                (err, res, body) => {
+                                    expect(res.statusCode).toBe(302);
+                                    Comment.all()
+                                    .then((comments) => {
+                                        expect(err).toBeNull();
+                                        expect(comments.length).toBe(commentCountBeforeDelete - 1);
+                                        done();
+                                    })
+                                }
+                            );
+                        });
+                    });
+                });
+            });
+        });
+    })
 });
