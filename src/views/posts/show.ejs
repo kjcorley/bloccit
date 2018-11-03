@@ -9,13 +9,27 @@
         <main class="container">
             <% include ../static/partials/messages.ejs %>
             <h1><%= post.title %></h1>
-            <% if(currentUser.isAdmin() || (currentUser.id == post.userId)) { %>
+            <% if(currentUser && (currentUser.isAdmin() || (currentUser.id == post.userId))) { %>
                 <a href="/topics/<%= post.topicId %>/posts/<%= post.id %>/edit" class="btn btn-warning">Edit</a>
                 <form style="display:initial" action="/topics/<%= post.topicId %>/posts/<%= post.id %>/destroy" method="POST">
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             <% } %>
             <p><%= post.body %></p>
+
+            <section id="comment-form">
+                <% if(currentUser) {%>
+                    <% include ../comments/new.ejs %>    
+                <% } %>
+            </section>
+
+            <section id="comment-list">
+                <% if(post.comments) { %>
+                    <% post.comments.forEach((comments) => { %>
+                        <% include("../comments/show.ejd", {comment}) %>
+                    <% }) %>
+                <% } %>
+            </section>
         </main>
 
         <% include ../static/partials/baseScripts.ejs %>

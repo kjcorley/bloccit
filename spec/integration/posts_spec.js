@@ -47,6 +47,18 @@ describe("routes : static", () => {
 
     describe("guest user performing CRUD actions for post", () => {
 
+        beforeEach((done) => {
+            request.get({
+                url: "http://localhost:3000/auth/fake/",
+                form: {
+                    userId: 0
+                }
+            }, (err, res, body) => {
+                done();
+                }
+            );
+        });
+
         describe("GET /topics/:topicId/posts/new", () => {
             it("should redirect to show topic view", (done) => {
                 request.get(`${base}/${this.topic.id}/posts/new`, (err, res, body) => {
