@@ -11,10 +11,12 @@ module.exports = {
         const postRoutes = require("../routes/posts");
         const userRoutes = require("../routes/users");
         const commentRoutes = require("../routes/comments");
+        const voteRoutes = require("../routes/votes");
         app.use(staticRoutes);
         app.use(topicRoutes);
         app.use(postRoutes);
         app.use(userRoutes);
         app.use(commentRoutes);
+        app.use(voteRoutes);
     }
 }
