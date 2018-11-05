@@ -118,7 +118,7 @@ describe("Post", () => {
     });
 
     describe("#setUser()", () => {
-        it("should return the assocaited topic", (done) => {
+        it("should return the associated topic", (done) => {
             this.post.getUser()
             .then((associatedUser) => {
                 expect(associatedUser.email).toBe("starman@tesla.com");

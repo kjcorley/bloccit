@@ -124,6 +124,40 @@ describe("routes : votes", () => {
                     });
                 });
             });
+
+            it("should not create more than one upvote", (done) => {
+                const options = {
+                    url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`
+                };
+                request.get(options, (err, res, body) => {
+                    Vote.findAll({
+                        where: {
+                            userId: this.user.id,
+                            postId: this.post.id
+                        }
+                    })
+                    .then((votes) => {
+                        const voteCount = votes.length;
+                        expect(voteCount).toBe(1);
+                        request.get(options, (err, res, body) => {
+                            Vote.findAll({
+                                where: {
+                                    userId: this.user.id,
+                                    postId: this.post.id
+                                }
+                            })
+                            .then((votes) => {
+                                expect(votes.length).toBe(voteCount);
+                                done();
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                done();
+                            });
+                        });
+                    });
+                });
+            });
         });
 
         describe("GET /topics/:topicId/posts/:postId/votes/downvote", () => {
@@ -148,6 +182,40 @@ describe("routes : votes", () => {
                     .catch((err) => {
                         console.log(err);
                         done();
+                    });
+                });
+            });
+
+            it("should not create more than one downvote", (done) => {
+                const options = {
+                    url: `${base}${this.topic.id}/posts/${this.post.id}/votes/downvote`
+                };
+                request.get(options, (err, res, body) => {
+                    Vote.findAll({
+                        where: {
+                            userId: this.user.id,
+                            postId: this.post.id
+                        }
+                    })
+                    .then((votes) => {
+                        const voteCount = votes.length;
+                        expect(voteCount).toBe(1);
+                        request.get(options, (err, res, body) => {
+                            Vote.findAll({
+                                where: {
+                                    userId: this.user.id,
+                                    postId: this.post.id
+                                }
+                            })
+                            .then((votes) => {
+                                expect(votes.length).toBe(voteCount);
+                                done();
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                done();
+                            });
+                        });
                     });
                 });
             });

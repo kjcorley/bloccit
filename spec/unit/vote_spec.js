@@ -96,7 +96,7 @@ describe("Vote", () => {
             });
         });
 
-        it("should not create a vote with assigned post or user", (done) => {
+        it("should not create a vote without assigned post or user", (done) => {
             Vote.create({
                 value: 1
             })
@@ -106,6 +106,22 @@ describe("Vote", () => {
             .catch((err) => {
                 expect(err.message).toContain("Vote.userId cannot be null");
                 expect(err.message).toContain("Vote.postId cannot be null");
+                done();
+            });
+        });
+
+        it("should not create a vote with a value other than 1 or -1", (done) => {
+            Vote.create({
+                value: 2,
+                userId: this.user.id,
+                postId: this.post.id
+            })
+            .then((value) => {
+                expect(value).toBeNull();
+                done();
+            })
+            .catch((err) => {
+                expect(err.message).toContain("Validation isIn on value failed");
                 done();
             });
         });
@@ -141,7 +157,7 @@ describe("Vote", () => {
     });
 
     describe("#getUser()", () => {
-        it("should return the assocaited user", (done) => {
+        it("should return the associated user", (done) => {
             Vote.create({
                 value: 1,
                 postId: this.post.id,
@@ -209,6 +225,112 @@ describe("Vote", () => {
             .catch((err) => {
                 console.log(err);
                 done();
+            });
+        });
+    });
+
+    describe("#getPoints()", () => {
+        it("should return the vote count for a post", (done) => {
+            Vote.create({
+                value: 1,
+                userId: this.user.id,
+                postId: this.post.id
+            })
+            .then((vote) => {
+                Post.findOne({
+                    where:{
+                        id: this.post.id
+                    },
+                    include: [
+                        {model: Vote, as: "votes"}
+                    ]
+                })
+                .then((post) => {
+                    expect(post.getPoints()).toBe(1);
+                    done();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    done();
+                });
+            });
+        });
+    });
+
+    describe("#hasUpvoteFor()", () => {
+        it("should return true if the post has an upvote for the user", (done) => {
+            Post.findOne({
+                where:{
+                    id: this.post.id
+                },
+                include: [
+                    {model: Vote, as:"votes"}
+                ]
+            })
+            .then((post) => {
+                expect(post.hasUpvoteFor(this.user.id)).toBeFalsy();
+                Vote.create({
+                    value: 1,
+                    userId: this.user.id,
+                    postId: this.post.id
+                })
+                .then((vote) => {
+                    Post.findOne({
+                        where:{
+                            id: this.post.id
+                        },
+                        include: [
+                            {model: Vote, as:"votes"}
+                        ]
+                    })
+                    .then((post) => {
+                        expect(post.hasUpvoteFor(this.user.id)).toBeTruthy();
+                        done();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        done();
+                    });
+                });
+            })
+        });
+    });
+
+    describe("#hasDownvoteFor()", () => {
+        it("should return true if the post has a downvote for the user", (done) => {
+            Post.findOne({
+                where: {
+                    id: this.post.id
+                },
+                include: [
+                    {model: Vote, as:"votes"}
+                ]
+            })
+            .then((post) => {
+                expect(post.hasDownvoteFor(this.user.id)).toBeFalsy();
+                Vote.create({
+                    value: -1,
+                    userId: this.user.id,
+                    postId: this.post.id
+                })
+                .then((vote) => {
+                    Post.findOne({
+                        where: {
+                            id: this.post.id
+                        },
+                        include: [
+                            {model: Vote, as:"votes"}
+                        ]
+                    })
+                    .then((post) => {
+                        expect(post.hasDownvoteFor(this.user.id)).toBeTruthy();
+                        done();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        done();
+                    });
+                });
             });
         });
     });
