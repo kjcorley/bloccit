@@ -17,7 +17,7 @@ module.exports = {
         app.use(session({
             secret: process.env.cookieSecret,
             resave: false,
-            saveUnitialized: false,
+            saveUninitialized: false,
             cookie: { maxAge: 1.21e+9 }
         }));
         app.use(flash());

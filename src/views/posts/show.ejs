@@ -20,18 +20,21 @@
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             <% } %>
+            <% if(currentUser) { %>
+                <% include ../favorites/favoriting.ejs %>
+            <% } %>
             <p><%= post.body %></p>
 
             <section id="comment-form">
-                <% if(currentUser) {%>
+                <% if(currentUser) { %>
                     <% include ../comments/new.ejs %>    
                 <% } %>
             </section>
 
             <section id="comment-list">
                 <% if(post.comments) { %>
-                    <% post.comments.forEach((comments) => { %>
-                        <% include("../comments/show.ejd", {comment}) %>
+                    <% post.comments.forEach((comment) => { %>
+                        <%- include("../comments/show.ejs", {comment}) %>
                     <% }) %>
                 <% } %>
             </section>

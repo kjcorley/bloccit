@@ -5,10 +5,10 @@
             <%= comment.body %>
         </p>
         <small class="card-subtitle mb-2 text-muted">
-            sent by <%= comment.User.email %> on <%= comment.createAt %>
+            sent by <%= comment.User.email %> on <%= comment.createdAt %>
         </small>
 
-        <% if(currentUser && currentUser.id === comment.userId || currentUser.isAdmin()) { %>
+        <% if(currentUser && (currentUser.isAdmin() || currentUser.id === comment.userId)) { %>
             <form style="display:initial"
                   action="/topics/<%= post.topicId %>/posts/<%= post.id %>/comments/<%= comment.id %>/destroy"
                   method="POST">
